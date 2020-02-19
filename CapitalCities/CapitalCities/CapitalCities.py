@@ -1,3 +1,8 @@
+import random
+
+timesWon = 0
+timesLost = 0
+
 def returnListCountries():
     countriesCities = ["Albania-Tirana", "Andorra-Andorra la Vella",
                        "Armenia-Yerevan", "Austria-Vienna",
@@ -23,15 +28,46 @@ def returnListCountries():
                        "Sweden-Stockholm", "Switzerland-Bern",
                        "Turkey-Ankara", "Ukraine-Kyiv", 
                        "United Kingdom-London"]
-
+    
     return countriesCities
 
-def accessFile(file, mode):
-    textFile = open(file, mode)
-    return textFile
+def accessFile(mode):
+    try:
+        textFile = open("countries.txt", mode)
+        return textFile
+    except IOError:
+        print("Could not access file! Try again later.")
+
+def displayScore():
+    print(f"Total times won: {timesWon}\nTotal times lost: {timesLost}\n")
+
+def generateQuiz():
+    global timesWon
+    global timesLost
+
+    country, capitalCity = splitData()
+
+    guessCapitalCity = input(f"What is the capital city of {country}?: ")
+    if guessCapitalCity != capitalCity:
+        print(f"Incorrect! The answer was {capitalCity}.", end='\n\n')
+        timesLost += 1
+    elif guessCapitalCity.isdigit() or guessCapitalCity == "":
+        print("Numeric input and blank spaces are not allowed!", end='\n\n')
+        timesLost += 1
+    else:
+        print("Correct!\n\n")
+        timesWon += 1
+
+def splitData():
+    file = accessFile("r").read().splitlines()
+    randomData = random.choice(file)
+    delimiter = randomData.find('-')
+    country = randomData[0:delimiter]
+    capitalCity = randomData[(delimiter + 1):]
+    return(country, capitalCity)
 
 def populateTextFile():
-    file = accessFile("countries.txt", "w")
+    file = accessFile("w")
     countriesCities = returnListCountries()
     for index in range(len(countriesCities)):
         file.write(countriesCities[index] + '\n')
@@ -39,6 +75,6 @@ def populateTextFile():
     
 populateTextFile()
 
-
-
-
+for index in range(3):
+    generateQuiz()
+displayScore()
