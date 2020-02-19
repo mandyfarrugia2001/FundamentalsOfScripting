@@ -26,7 +26,18 @@ def returnListCountries():
 
     return countriesCities
 
-countriesTextFile = createFile("countries.txt")
+def accessFile(file, mode):
+    textFile = open(file, mode)
+    return textFile
+
+def populateTextFile():
+    file = accessFile("countries.txt", "w")
+    countriesCities = returnListCountries()
+    for index in range(len(countriesCities)):
+        file.write(countriesCities[index] + '\n')
+    file.close()
+    
+populateTextFile()
 
 
 
